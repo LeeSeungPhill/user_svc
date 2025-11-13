@@ -7,6 +7,7 @@ import UserList from "./UserList";
 export default function ProfilePage() {
   const [profile, setProfile] = useState(null);
   const [editMode, setEditMode] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
   const [form, setForm] = useState({ nick_name: "", tel_no: "", change_pw: "",  app_key: "", app_secret: "", bot_token1: "", bot_token2: ""});
   const navigate = useNavigate();
 
@@ -64,6 +65,8 @@ export default function ProfilePage() {
       setProfile(res.data);
       setEditMode(false);
       setForm({ ...form, change_pw: "" });
+      // UserList 리프레시 트리거
+      setRefreshKey((prev) => prev + 1);
     } catch (err) {
       console.error(err);
       alert("프로필 수정에 실패했습니다.");
@@ -174,7 +177,10 @@ export default function ProfilePage() {
       )}
 
       <hr style={{ margin: "2rem 0" }} />
-      <UserList />
+      <UserList key={profile?.updated_at || Date.now()} />
+      {/* - key: 프로필이 업데이트될 때마다 컴포넌트를 강제로 리렌더링하도록 함
+          - profile.updated_at 값이 없을 경우, Date.now()를 사용해 새 키를 생성함
+          - 이렇게 하면 프로필 수정 후 UserList가 자동 새로고침됨 */}
     </div>
   );
 }

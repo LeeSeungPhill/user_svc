@@ -2,7 +2,7 @@ import axios from "axios";
 import { getRefreshToken, saveTokens, logout } from "../auth";
 
 const api = axios.create({
-  baseURL: "http://127.0.0.1:8000",
+  baseURL: "http://192.168.50.81:8002",
 });
 
 // 요청마다 access_token 자동 추가
@@ -24,7 +24,7 @@ api.interceptors.response.use(
       try {
         const refresh = getRefreshToken();
         console.log("refresh : " ,refresh)
-        const res = await axios.post("http://127.0.0.1:8000/refresh", { refresh_token: refresh });
+        const res = await axios.post("http://192.168.50.81:8002/refresh", { refresh_token: refresh });
         console.log("refresh res : " ,res.data)
         saveTokens(res.data.access_token, res.data.refresh_token);
         return api(originalRequest);
